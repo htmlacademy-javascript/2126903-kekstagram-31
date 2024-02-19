@@ -31,5 +31,4 @@ function checksPalindrome(string) {
 checksPalindrome('топот');
 checksPalindrome('ДовОд');
 checksPalindrome('Кекс');
-
-
+checksPalindrome('Лёша на полке клопа нашёл ');
