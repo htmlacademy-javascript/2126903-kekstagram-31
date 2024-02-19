@@ -15,7 +15,7 @@ comparesStringLength('проверяемая строка', 10);
 //Функция для проверки, является ли строка палиндромом.
 
 function checksPalindrome(string) {
-  let stringReplaceUpperCase = string.toUpperCase().replaceAll(' ', '');
+  const stringReplaceUpperCase = string.toUpperCase().replaceAll(' ', '');
   let invertedString = '';
   for (let i = stringReplaceUpperCase.length - 1; i >= 0; i--) {
     invertedString += stringReplaceUpperCase.at(i);
