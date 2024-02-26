@@ -6,7 +6,33 @@ const MESSAGES = [
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!',
 ];
 
+const DESCRIPTION = [
+  'Очень красивое фото!',
+  'Самая большая гора в мире',
+  'Самый красивый водопад, который находится в африке!',
+  'Лучшее фото, что я когда либо видел',
+  'Прекрасный портрет',
+  'Жители дикой природы',
+];
+
 const NAMES = ['Артём', 'Андрей', 'Никита', 'Дима', 'Алиса', 'Настя', 'Полина', 'Александр', 'Володя'];
+
+const quantityPhoto = 25;
+
+const valueFromRandom = {
+  minCommentId: 0,
+  maxCommentId: 750,
+  minId: 1,
+  maxId: 25,
+  minUnicPhoto: 1,
+  maxUnicPhoto: 25,
+  minAvatar: 1,
+  maxAvatar: 6,
+  minLikes: 15,
+  maxLikes: 200,
+  minComments: 0,
+  maxComments: 30,
+};
 
 const getRandomInteger = (a, b) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -33,13 +59,13 @@ function createRandomIdFromRangeGenerator(a, b) {
 
 const getRandomArrayElement = (element) => element[getRandomInteger(0, element.length - 1)];
 
-const getCommentId = createRandomIdFromRangeGenerator(0, 750);
-const getId = createRandomIdFromRangeGenerator(1, 25);
-const getUnicPhoto = createRandomIdFromRangeGenerator(1, 25);
+const getCommentId = createRandomIdFromRangeGenerator(valueFromRandom.minCommentId, valueFromRandom.maxCommentId);
+const getId = createRandomIdFromRangeGenerator(valueFromRandom.minId, valueFromRandom.maxId);
+const getUnicPhoto = createRandomIdFromRangeGenerator(valueFromRandom.minUnicPhoto, valueFromRandom.maxUnicPhoto);
 
 const getObjectComments = () => ({
   id: getCommentId(),
-  avatar: `img/avatar-${getRandomInteger(1, 6)}.svg`,
+  avatar: `img/avatar-${getRandomInteger(valueFromRandom.minAvatar, valueFromRandom.maxAvatar)}.svg`,
   message: getRandomArrayElement(MESSAGES),
   name: getRandomArrayElement(NAMES),
 });
@@ -47,10 +73,11 @@ const getObjectComments = () => ({
 const createPhotoDescription = () => ({
   id: getId(),
   url: `photos/${getUnicPhoto()}.jpg`,
-  likes: getRandomInteger(15, 200),
-  comments: Array.from({ length: getRandomInteger(0, 30) }, getObjectComments),
+  description: getRandomArrayElement(DESCRIPTION),
+  likes: getRandomInteger(valueFromRandom.minLikes, valueFromRandom.maxLikes),
+  comments: Array.from({ length: getRandomInteger(valueFromRandom.minComments, valueFromRandom.maxComments) }, getObjectComments),
 });
 
-const similarСreatePhotoDescription = Array.from({ length: 25 }, createPhotoDescription);
+const similarСreatePhotoDescription = Array.from({ length: quantityPhoto }, createPhotoDescription);
 
 similarСreatePhotoDescription();
