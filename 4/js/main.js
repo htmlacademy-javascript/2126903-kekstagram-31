@@ -1,3 +1,5 @@
+const QUANTITYPHOTO = 25;
+
 const MESSAGES = [
   'Всё отлично', 'В целом всё неплохо. Но не всё.',
   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
@@ -17,21 +19,19 @@ const DESCRIPTION = [
 
 const NAMES = ['Артём', 'Андрей', 'Никита', 'Дима', 'Алиса', 'Настя', 'Полина', 'Александр', 'Володя'];
 
-const quantityPhoto = 25;
+const AVATAR = {
+  min: 1,
+  max: 6,
+};
 
-const valueFromRandom = {
-  minCommentId: 0,
-  maxCommentId: 750,
-  minId: 1,
-  maxId: 25,
-  minUnicPhoto: 1,
-  maxUnicPhoto: 25,
-  minAvatar: 1,
-  maxAvatar: 6,
-  minLikes: 15,
-  maxLikes: 200,
-  minComments: 0,
-  maxComments: 30,
+const COMMENTS = {
+  min: 0,
+  max: 30,
+};
+
+const LIKES = {
+  min: 15,
+  max: 200,
 };
 
 const getRandomInteger = (a, b) => {
@@ -41,43 +41,39 @@ const getRandomInteger = (a, b) => {
   return Math.floor(result);
 };
 
-function createRandomIdFromRangeGenerator(a, b) {
-  const previousValues = [];
-
-  return function () {
-    let currentValue = getRandomInteger(a, b);
-    if (previousValues.length >= (b - a + 1)) {
-      return null;
-    }
-    while (previousValues.includes(currentValue)) {
-      currentValue = getRandomInteger(a, b);
-    }
-    previousValues.push(currentValue);
-    return currentValue;
-  };
-}
-
 const getRandomArrayElement = (element) => element[getRandomInteger(0, element.length - 1)];
 
-const getCommentId = createRandomIdFromRangeGenerator(valueFromRandom.minCommentId, valueFromRandom.maxCommentId);
-const getId = createRandomIdFromRangeGenerator(valueFromRandom.minId, valueFromRandom.maxId);
-const getUnicPhoto = createRandomIdFromRangeGenerator(valueFromRandom.minUnicPhoto, valueFromRandom.maxUnicPhoto);
-
-const getObjectComments = () => ({
-  id: getCommentId(),
-  avatar: `img/avatar-${getRandomInteger(valueFromRandom.minAvatar, valueFromRandom.maxAvatar)}.svg`,
+const addComment = (id) => ({
+  id: id,
+  avatar: `img/avatar-${getRandomInteger(AVATAR.min, AVATAR.max)}.svg`,
   message: getRandomArrayElement(MESSAGES),
   name: getRandomArrayElement(NAMES),
 });
 
-const createPhotoDescription = () => ({
-  id: getId(),
-  url: `photos/${getUnicPhoto()}.jpg`,
+const addComments = () => {
+  const comments = [];
+
+  for (let i = 1; i <= getRandomInteger(COMMENTS.min, COMMENTS.max); i++) {
+    comments.push(addComment(i));
+  }
+
+  return (comments);
+};
+
+const addPhoto = (id) => ({
+  id: id,
+  url: `photos/${id}.jpg`,
   description: getRandomArrayElement(DESCRIPTION),
-  likes: getRandomInteger(valueFromRandom.minLikes, valueFromRandom.maxLikes),
-  comments: Array.from({ length: getRandomInteger(valueFromRandom.minComments, valueFromRandom.maxComments) }, getObjectComments),
+  likes: getRandomInteger(LIKES.min, LIKES.max),
+  comments: addComments(),
 });
 
-const similarСreatePhotoDescription = Array.from({ length: quantityPhoto }, createPhotoDescription);
+const addPhotos = () => {
+  const photos = [];
+  for (let i = 1; i <= QUANTITYPHOTO; i++) {
+    photos.push(addPhoto(i));
+  }
+  return photos;
+};
 
-similarСreatePhotoDescription();
+addPhotos();
