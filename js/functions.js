@@ -33,7 +33,6 @@ checksPalindrome('ДовОд');
 checksPalindrome('Кекс');
 checksPalindrome('Лёша на полке клопа нашёл ');
 
-
 const checkTime = (startDay, endDay, startMeeting, durationMeeting) => {
   const startDayNumber = startDay.split(':');
   const endDayNumber = endDay.split(':');
