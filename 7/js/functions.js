@@ -30,7 +30,7 @@ function checksPalindrome(string) {
 
 checksPalindrome('топот');
 checksPalindrome('ДовОд');
-checksPalindrome('Секс');
+checksPalindrome('Кекс');
 checksPalindrome('Лёша на полке клопа нашёл ');
 
 const checkTime = (startDay, endDay, startMeeting, durationMeeting) => {
