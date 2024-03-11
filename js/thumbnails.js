@@ -14,12 +14,12 @@ const renderPhoto = (photo) => {
 
   thumbnail.querySelector('.picture__comments').textContent = photo.comments.length;
   thumbnail.querySelector('.picture__likes').textContent = photo.likes;
-  fragment.appendChild(thumbnail);
+  return thumbnail;
 };
 
 const renderPhotos = (objects) => {
   for (let i = 0; i < objects.length; i++) {
-    renderPhoto(objects[i]);
+    fragment.appendChild(renderPhoto(objects[i]));
   }
   pictures.appendChild(fragment);
 };
