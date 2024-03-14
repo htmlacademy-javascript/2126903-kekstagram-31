@@ -1,3 +1,4 @@
+import { OpenBigPhoto } from './big-picture.js';
 
 const pictures = document.querySelector('.pictures');
 const template = document.querySelector('#picture').content.querySelector('.picture');
@@ -14,6 +15,8 @@ const renderPhoto = (photo) => {
 
   thumbnail.querySelector('.picture__comments').textContent = photo.comments.length;
   thumbnail.querySelector('.picture__likes').textContent = photo.likes;
+  OpenBigPhoto(thumbnail, photo);
+
   return thumbnail;
 };
 
