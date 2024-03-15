@@ -15,7 +15,14 @@ const renderPhoto = (photo) => {
 
   thumbnail.querySelector('.picture__comments').textContent = photo.comments.length;
   thumbnail.querySelector('.picture__likes').textContent = photo.likes;
-  OpenBigPhoto(thumbnail, photo);
+
+  const onPictureElementClick = (evt) => {
+    evt.preventDefault();
+
+    OpenBigPhoto(photo);
+  };
+
+  thumbnail.addEventListener('click', onPictureElementClick);
 
   return thumbnail;
 };

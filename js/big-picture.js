@@ -1,4 +1,6 @@
-const avatarDescription = {
+import { isEscKeyDown } from './util.js';
+
+const AvatarDescription = {
   HEIGHT: 35,
   WIDTH: 35
 };
@@ -24,8 +26,8 @@ const createComment = (comment, template) => {
 
   avatar.src = comment.avatar;
   avatar.alt = comment.name;
-  avatar.HEIGHT = avatarDescription.HEIGHT;
-  avatar.WIDTH = avatarDescription.WIDTH;
+  avatar.HEIGHT = AvatarDescription.HEIGHT;
+  avatar.WIDTH = AvatarDescription.WIDTH;
   commentText.textContent = comment.message;
 
   return newComment;
@@ -41,34 +43,31 @@ const closeBigPhoto = () => {
 
 closeButton.addEventListener('click', () => {
   closeBigPhoto();
-
 });
 
-const onEscDown = (evt) => {
-  if (evt.key === 'Escape') {
+const onEscKeyDown = (evt) => {
+  if (isEscKeyDown(evt)) {
+    evt.preventDefault();
     closeBigPhoto();
-    document.removeEventListener('keydown', onEscDown);
   }
 };
 
-const OpenBigPhoto = (image, photo) => {
-  image.addEventListener('click', () => {
-    bigPicture.classList.remove('hidden');
+const OpenBigPhoto = (photo) => {
+  bigPicture.classList.remove('hidden');
 
-    bigPictureImg.querySelector('img').src = photo.url;
-    likesCount.textContent = photo.likes;
-    socialCaption.textContent = photo.description;
-    socialCommentTotalCount.textContent = photo.comments.length;
-    comments.innerHTML = '';
+  bigPictureImg.querySelector('img').src = photo.url;
+  likesCount.textContent = photo.likes;
+  socialCaption.textContent = photo.description;
+  socialCommentTotalCount.textContent = photo.comments.length;
+  comments.innerHTML = '';
 
-    photo.comments.forEach((comment) => {
-      comments.appendChild(createComment(comment, socialComment));
-      body.classList.add('modal-open');
-      socialCommentCount.classList.add('hidden');
-      commentsLoader.classList.add('hidden');
-    });
-    document.addEventListener('keydown', onEscDown);
+  photo.comments.forEach((comment) => {
+    comments.appendChild(createComment(comment, socialComment));
+    body.classList.add('modal-open');
+    socialCommentCount.classList.add('hidden');
+    commentsLoader.classList.add('hidden');
   });
+  document.addEventListener('keydown', onEscKeyDown);
 };
 
 export { OpenBigPhoto };
