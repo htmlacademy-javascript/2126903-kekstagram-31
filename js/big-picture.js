@@ -1,22 +1,23 @@
-import { isEscKeyDown } from './util.js';
+import { isEscKeyDown, numDecline } from './util.js';
 
 const AvatarDescription = {
   HEIGHT: 35,
   WIDTH: 35
 };
 
+const COMMENTS_STEP = 5;
+
 const bigPicture = document.querySelector('.big-picture');
-const body = document.querySelector('body');
-const bigPictureImg = bigPicture.querySelector('.big-picture__img');
-const likesCount = bigPicture.querySelector('.likes-count');
-const socialCaption = bigPicture.querySelector('.social__caption');
 const comments = bigPicture.querySelector('.social__comments');
-const socialCommentCount = document.querySelector('.social__comment-count');
 const commentsLoader = document.querySelector('.comments-loader');
 const socialCommentTotalCount = bigPicture.querySelector('.social__comment-total-count');
 const socialComment = bigPicture.querySelector('.social__comment');
 const closeButton = bigPicture.querySelector('.big-picture__cancel');
+const socialCommentCount = document.querySelector('.social__comment-count');
+const socialCommentShowCount = bigPicture.querySelector('.social__comment-shown-count');
 
+let commentsCount = COMMENTS_STEP;
+let currentComments = [];
 
 const createComment = (comment, template) => {
   const newComment = template.cloneNode(true);
@@ -33,12 +34,42 @@ const createComment = (comment, template) => {
   return newComment;
 };
 
+const renderComments = () => {
+  comments.innerHTML = '';
+  socialCommentCount.innerHTML = '';
+
+  commentsCount = (commentsCount > currentComments.length) ? currentComments.length : commentsCount;
+  const commentSelected = currentComments.slice(0, commentsCount);
+
+  if (currentComments.length < COMMENTS_STEP || commentsCount >= currentComments.length) {
+    commentsLoader.classList.add('hidden');
+  } else {
+    commentsLoader.classList.remove('hidden');
+  }
+
+  socialCommentCount.innerHTML = `${commentsCount} из <span class='comments-count'>${currentComments.length}</span> ${numDecline(currentComments.length, 'комментария', 'комментариев', 'комментариев')}`;
+
+  socialCommentShowCount.textContent = commentsCount;
+  socialCommentTotalCount.textContent = currentComments.length;
+
+
+  commentSelected.forEach((comment) => {
+    comments.appendChild(createComment(comment, socialComment));
+  });
+};
+
+const onCommentsLoaderClick = () => {
+  commentsCount += COMMENTS_STEP;
+  renderComments();
+};
+
 const closeBigPhoto = () => {
+  currentComments = [];
+  commentsCount = COMMENTS_STEP;
   bigPicture.classList.add('hidden');
-  body.classList.remove('modal-open');
-  socialCommentCount.classList.remove('hidden');
-  commentsLoader.classList.remove('hidden');
-  closeButton.removeEventListener('click', closeBigPhoto);
+  document.body.classList.remove('modal-open');
+  commentsLoader.removeEventListener('keydown', onCommentsLoaderClick);
+
 };
 
 closeButton.addEventListener('click', () => {
@@ -55,20 +86,21 @@ const onEscKeyDown = (evt) => {
 const OpenBigPhoto = (photo) => {
   bigPicture.classList.remove('hidden');
 
-  bigPictureImg.querySelector('img').src = photo.url;
-  likesCount.textContent = photo.likes;
-  socialCaption.textContent = photo.description;
+  bigPicture.querySelector('.big-picture__img img').src = photo.url;
+  bigPicture.querySelector('.likes-count').textContent = photo.likes;
+  bigPicture.querySelector('.social__caption').textContent = photo.description;
   socialCommentTotalCount.textContent = photo.comments.length;
-  comments.innerHTML = '';
+  socialCommentCount.classList.remove('hidden');
+  commentsLoader.classList.remove('hidden');
+  document.body.classList.add('modal-open');
 
-  photo.comments.forEach((comment) => {
-    comments.appendChild(createComment(comment, socialComment));
-    body.classList.add('modal-open');
-    socialCommentCount.classList.add('hidden');
-    commentsLoader.classList.add('hidden');
-  });
+  currentComments = photo.comments;
+  renderComments();
+
   document.addEventListener('keydown', onEscKeyDown);
+  commentsLoader.addEventListener('click', onCommentsLoaderClick);
+  closeButton.addEventListener('click', closeBigPhoto);
+
 };
 
 export { OpenBigPhoto };
-
