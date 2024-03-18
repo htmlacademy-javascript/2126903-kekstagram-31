@@ -21,24 +21,24 @@ const DESCRIPTION = [
 
 const NAMES = ['Артём', 'Андрей', 'Никита', 'Дима', 'Алиса', 'Настя', 'Полина', 'Александр', 'Володя'];
 
-const AVATAR = {
-  min: 1,
-  max: 6,
+const Avatar = {
+  MIN: 1,
+  MAX: 6,
 };
 
-const COMMENTS = {
-  min: 0,
-  max: 30,
+const Comments = {
+  MIN: 0,
+  MAX: 30,
 };
 
-const LIKES = {
-  min: 15,
-  max: 200,
+const Likes = {
+  MIN: 15,
+  MAX: 200,
 };
 
 const addComment = (id) => ({
-  id: id,
-  avatar: `img/avatar-${getRandomInteger(AVATAR.min, AVATAR.max)}.svg`,
+  id,
+  avatar: `img/avatar-${getRandomInteger(Avatar.MIN, Avatar.MAX)}.svg`,
   message: getRandomArrayElement(MESSAGES),
   name: getRandomArrayElement(NAMES),
 });
@@ -46,7 +46,7 @@ const addComment = (id) => ({
 const addComments = () => {
   const comments = [];
 
-  for (let i = 1; i <= getRandomInteger(COMMENTS.min, COMMENTS.max); i++) {
+  for (let i = 1; i <= getRandomInteger(Comments.MIN, Comments.MAX); i++) {
     comments.push(addComment(i));
   }
 
@@ -54,10 +54,10 @@ const addComments = () => {
 };
 
 const addPhoto = (id) => ({
-  id: id,
+  id,
   url: `photos/${id}.jpg`,
   description: getRandomArrayElement(DESCRIPTION),
-  likes: getRandomInteger(LIKES.min, LIKES.max),
+  likes: getRandomInteger(Likes.MIN, Likes.MAX),
   comments: addComments(),
 });
 

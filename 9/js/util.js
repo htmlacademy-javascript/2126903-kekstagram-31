@@ -1,8 +1,7 @@
-const getRandomInteger = (a, b) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-  const result = Math.random() * (upper - lower + 1) + lower;
-  return Math.floor(result);
+const getRandomInteger = (min, max) => {
+  min = Math.ceil(Math.min(min, max));
+  max = Math.floor(Math.max(min, max));
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
 const getRandomArrayElement = (element) => element[getRandomInteger(0, element.length - 1)];
