@@ -100,7 +100,6 @@ const OpenBigPhoto = (photo) => {
   document.addEventListener('keydown', onEscKeyDown);
   commentsLoader.addEventListener('click', onCommentsLoaderClick);
   closeButton.addEventListener('click', closeBigPhoto);
-
 };
 
 export { OpenBigPhoto };
