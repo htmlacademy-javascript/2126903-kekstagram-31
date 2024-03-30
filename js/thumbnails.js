@@ -1,37 +1,26 @@
-import { OpenBigPhoto } from './big-picture.js';
-
-const pictures = document.querySelector('.pictures');
+const container = document.querySelector('.pictures');
 const template = document.querySelector('#picture').content.querySelector('.picture');
-
 const fragment = document.createDocumentFragment();
 
-const renderPhoto = (photo) => {
+const renderThumbnail = (photo) => {
   const thumbnail = template.cloneNode(true);
-
   const image = thumbnail.querySelector('.picture__img');
+  const { id, url, description, likes, comments } = photo;
 
-  image.src = photo.url;
-  image.alt = photo.description;
-
-  thumbnail.querySelector('.picture__comments').textContent = photo.comments.length;
-  thumbnail.querySelector('.picture__likes').textContent = photo.likes;
-
-  const onPictureElementClick = (evt) => {
-    evt.preventDefault();
-
-    OpenBigPhoto(photo);
-  };
-
-  thumbnail.addEventListener('click', onPictureElementClick);
+  thumbnail.dataset.id = id;
+  thumbnail.href = url;
+  image.src = url;
+  image.alt = description;
+  thumbnail.querySelector('.picture__likes').textContent = likes;
+  thumbnail.querySelector('.picture__comments').textContent = comments.length;
 
   return thumbnail;
 };
 
-const renderPhotos = (objects) => {
-  for (let i = 0; i < objects.length; i++) {
-    fragment.appendChild(renderPhoto(objects[i]));
-  }
-  pictures.appendChild(fragment);
+const renderThumbnails = (objects) => {
+  objects.forEach((item) =>
+    fragment.append(renderThumbnail(item)));
+  container.append(fragment);
 };
 
-export { renderPhotos };
+export { renderThumbnails };
