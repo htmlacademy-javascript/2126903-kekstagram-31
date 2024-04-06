@@ -1,13 +1,14 @@
 import { isEscapeKey } from './util.js';
 import { onEffectChange } from './slider.js';
-import { isFormValid, pristine } from './check-hashtag-error.js';
+import { pristine } from './check-hashtag-error.js';
 import { sendData } from './api.js';
 import { showModal } from './show-modal.js';
 
+const PERCENTAGE_VALUE = 100;
 const SCALE_STEP = 0.25;
 
 const SubmitButtonText = {
-  IDLE: 'Сохранить',
+  IDLE: 'Опубликовать',
   SENDING: 'Сохраняю...',
 };
 
@@ -29,14 +30,26 @@ const submitButton = imgUploadForm.querySelector('.img-upload__submit');
 
 let scale = 1;
 
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = SubmitButtonText.SENDING;
+};
+
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = SubmitButtonText.IDLE;
+};
+
 const onImgUploadClose = () => {
   document.body.classList.remove('modal-open');
   uploadOverlay.classList.add('hidden');
-  scale = 1;
-  img.style.transform = `scale(${scale})`;
   effectLevel.classList.add('hidden');
-  img.style.filter = 'none';
+  img.style.transform = '';
+  img.style.filter = '';
+  scale = 1;
+  unblockSubmitButton();
   imgUploadForm.reset();
+  pristine.reset();
   document.removeEventListener('keydown', onEscapeKeydown);
 };
 
@@ -53,14 +66,14 @@ function onEscapeKeydown(evt) {
 const onPhotoSelect = () => {
   document.body.classList.add('modal-open');
   uploadOverlay.classList.remove('hidden');
-  document.addEventListener('keydown', onEscapeKeydown, false);
+  document.addEventListener('keydown', onEscapeKeydown);
 };
 
 const changeZoom = (factor = 1) => {
   if (scale < 1 && factor > 0 || scale > SCALE_STEP && factor < 0) {
     scale += SCALE_STEP * factor;
     img.style.transform = `scale(${scale})`;
-    scaleControl.value = `${scale * 100}%`;
+    scaleControl.value = `${scale * PERCENTAGE_VALUE}%`;
   }
 };
 
@@ -73,57 +86,39 @@ const onBiggerClick = () => {
 };
 
 const onHashtagInput = () => {
-  submitButton.disabled = !isFormValid(inputHashtags.value);
+  submitButton.disabled = !pristine.validate();
 };
 
 const onCommentInput = () => {
-  submitButton.disabled = !isFormValid(inputHashtags.value);
+  submitButton.disabled = !pristine.validate();
 };
 
-const blockSubmitButton = () => {
-  submitButton.disabled = true;
-  submitButton.textContent = SubmitButtonText.SENDING;
+const onImgUploadFormSubmit = (evt) => {
+  evt.preventDefault();
+
+  if (pristine.validate()) {
+    inputHashtags.value = inputHashtags.value.trim().replaceAll(/\s+/g, ' ');
+    blockSubmitButton();
+    sendData(new FormData(evt.target))
+      .then(() => {
+        onImgUploadClose();
+        showModal(successPopup, 'success');
+      })
+      .catch(() => showModal(errorPopup, 'error'))
+      .finally(() => unblockSubmitButton());
+  }
 };
 
-const unblockSubmitButton = () => {
-  submitButton.disabled = false;
-  submitButton.textContent = SubmitButtonText.IDLE;
-};
-
-const onFormSubmit = (onSuccess) => {
-  imgUploadForm.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-
-    if (pristine.validate()) {
-      blockSubmitButton();
-      inputHashtags.value = inputHashtags.value.trim().replaceAll(/\s+/g, ' ');
-      const formData = new FormData(evt.target);
-      sendData(formData)
-        .then(onSuccess)
-        .then(unblockSubmitButton)
-        .then(() => {
-          if (submitButton.textContent === SubmitButtonText.IDLE) {
-            showModal(successPopup, 'success');
-          }
-        });
-    } else {
-      showModal(errorPopup, 'error');
-    }
-  });
-};
+imgUploadForm.addEventListener('submit', onImgUploadFormSubmit);
 
 uploadFile.addEventListener('change', onPhotoSelect);
 
 imgUploadCancel.addEventListener('click', onImgUploadClose);
 
 smaller.addEventListener('click', onSmallerClick);
-
 bigger.addEventListener('click', onBiggerClick);
 
 effectsList.addEventListener('change', onEffectChange);
 
 inputHashtags.addEventListener('input', onHashtagInput);
-
 inputDescription.addEventListener('input', onCommentInput);
-
-export { onFormSubmit, onImgUploadClose };

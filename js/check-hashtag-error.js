@@ -10,7 +10,7 @@ const inputDescription = imgUploadForm.querySelector('.text__description');
 
 let errorMessage = '';
 
-const error = () => errorMessage;
+const getErrorMessage = () => errorMessage;
 
 const isHashtagsValid = (value) => {
   errorMessage = '';
@@ -68,15 +68,12 @@ const isHashtagsValid = (value) => {
 const isDescriptionValid = () => inputDescription.value.length <= MAX_DESCRIPTION_LENGTH;
 
 const pristine = new Pristine(imgUploadForm, {
-  classTo: 'img-upload__form',
-  errorClass: 'has-danger',
-  successClass: 'has-success',
+  classTo: 'img-upload__field-wrapper',
   errorTextParent: 'img-upload__field-wrapper',
-  errorTextTag: 'div',
   errorTextClass: 'img-upload__field-wrapper--error',
 });
 
-pristine.addValidator(inputHashtags, isHashtagsValid, error, 1, false);
+pristine.addValidator(inputHashtags, isHashtagsValid, getErrorMessage, 1, false);
 
 pristine.addValidator(
   inputDescription,
@@ -85,6 +82,5 @@ pristine.addValidator(
   1, false
 );
 
-const isFormValid = (input) => isHashtagsValid(input) && isDescriptionValid();
+export { pristine };
 
-export { isFormValid, pristine };
