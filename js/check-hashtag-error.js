@@ -83,4 +83,3 @@ pristine.addValidator(
 );
 
 export { pristine };
-
