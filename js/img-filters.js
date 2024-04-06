@@ -1,4 +1,4 @@
-import { renderThumbnails } from './create-comments.js';
+import { renderThumbnails } from './thumbnails.js';
 import { debounce, shuffleArray } from './util.js';
 
 const RENDER_PHOTOS_COUNT = 10;
